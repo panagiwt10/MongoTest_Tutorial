@@ -34,29 +34,51 @@ def show_sample_movie():
  movie = movies.find_one()
  pprint.pprint(movie)
 
-def search_movies(genres, minimum_rating):
+def search_movies(genres, minimum_rating, limit=10):
    query = {
       "genres": {"$in": genres }, 
-      "imdb.rating": {"type": "number" ,
-      "gte": minimum_rating 
+      "imdb.rating": {"$type": "number" ,
+      "$gte": minimum_rating 
       } 
    }
 
    projection = { 
-      "_id": 0, 
+      "_id": 1, 
       "title": 1, 
       "year": 1, 
       "imdb.rating":1
    }
 
-   results = movies.find(query, projection).sort("imdb.rating", -1).limit(10)
-   found = False
+   results = list(movies.find(query, projection).sort("imdb.rating", -1).limit(limit))
+   
+   
+   """found = False
    for movie in results: 
       found = True
       pprint.pprint(movie)
 
-   #if not found:
-    #  print("no movie tonight")   
+   if not found:
+      print("no movie tonight") """
+    
+   return results   
+
+
+def display_movies(results):
+   if not results:
+      print("no movie tonight")
+
+      for position, movie in enumerate(results, start=1):
+         title = movie.get("title", "N/A")
+         year = movie.get("year", "N/A")
+         rating = movie.get("imdb", {}).get("rating", "?")
+         
+         print(f"{position}. {title} ({year}) [ IMDb: {rating}]")
+         print(f" ID: {movie['_id']} ")
 
 if __name__ == "__main__":
-    search_movies(["Action", "Adventure"], 7.0)
+   results = search_movies(
+      genres = ["Action", "Adventure"], minimum_rating = 7.0, limit = 10
+   )
+
+   display_movies(results)
+
