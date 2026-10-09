@@ -64,10 +64,10 @@ def search_movies(genres, minimum_rating, limit=10):
 
 
 def display_movies(results):
-   if not results:
+    if not results:
       print("no movie tonight")
 
-      for position, movie in enumerate(results, start=1):
+    for position, movie in enumerate(results, start=1):
          title = movie.get("title", "N/A")
          year = movie.get("year", "N/A")
          rating = movie.get("imdb", {}).get("rating", "?")
@@ -81,4 +81,3 @@ if __name__ == "__main__":
    )
 
    display_movies(results)
-
