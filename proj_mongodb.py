@@ -33,6 +33,7 @@ research_db = client.Research
 collections = research_db.list_collection_names()
 pprint.pprint(collections)
 
+# insert 
 def insert_research_doc():
     collections = research_db.Research
     research_document = {
@@ -45,3 +46,35 @@ def insert_research_doc():
 
 
 insert_research_doc()
+
+# read 
+def find_research_doc():
+    research_collections = research_db.Research
+
+    documents = research_collections.find({
+        "name": "Panagiotis"
+    })
+
+    for document in documents:
+        pprint.pprint(document)
+
+find_research_doc()
+
+# create doc 
+def create_research_doc():
+    research_collections = research_db.Research
+
+    first_names = ["Mei" , "Hana", "Yuki"]
+    last_names = ["Ruscica", "tanaka", "Batsuko"]
+    ages = [25 , 27, 26]
+
+    docs = []
+    for first_names, last_names, ages in zip(first_names, last_names, ages):
+        doc = {
+            "first_names": first_names, "last_names": last_names, "ages": ages
+        }
+        docs.append(doc)
+
+    person_collection = research_collections.insert_many(docs)
+
+create_research_doc()    
