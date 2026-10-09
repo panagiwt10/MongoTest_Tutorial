@@ -78,3 +78,23 @@ def create_research_doc():
     person_collection = research_collections.insert_many(docs)
 
 create_research_doc()    
+
+#update 
+
+def update_research_doc(): 
+    research_collections = research_db.Research
+
+    document = research_collections.find_one({
+        "name" : "Panagiotis"
+    })
+
+    result = research_collections.update_one(
+        {"_id": document["_id"]}, # επιλεγουμε συγκεκριμενο doc 
+        {"$set": {"status": "learning"}} # οριζει ενα πεδιο , δημιουργωντας το αν δεν υπαρχει με την αλλαγη που θελουμε 
+    )
+
+    print("Matched:", result.matched_count) # ποσα docs ταιριαξαν 
+    print("Modified:", result.modified_count) # ποσα αλλαξαν πραγματικα
+
+    updated_document = research_collections.find_one({"_id": document["_id"]})
+    pprint.pprint(updated_document)
