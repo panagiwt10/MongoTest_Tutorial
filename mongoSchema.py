@@ -36,7 +36,7 @@ def show_sample_movie():
 
 def search_movies(genres, minimum_rating, limit=10):
    query = {
-      "genres": {"$in": genres }, 
+      "genres": {"$in": genres, "$size": 1}, 
       "imdb.rating": {"$type": "number" ,
       "$gte": minimum_rating 
       } 
