@@ -98,3 +98,5 @@ def update_research_doc():
 
     updated_document = research_collections.find_one({"_id": document["_id"]})
     pprint.pprint(updated_document)
+
+update_research_doc()
