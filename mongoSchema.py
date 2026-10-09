@@ -34,5 +34,5 @@ def show_sample_movie():
  movie = movies.find_one()
  pprint.pprint(movie)
 
- if __name__ == "__main__":
-    show_sample_movie()
+if __name__ == "__main__":
+ show_sample_movie()
