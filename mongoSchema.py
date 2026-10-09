@@ -34,5 +34,29 @@ def show_sample_movie():
  movie = movies.find_one()
  pprint.pprint(movie)
 
+def search_movies(genres, minimum_rating):
+   query = {
+      "genres": {"$in": genres }, 
+      "imdb.rating": {"type": "number" ,
+      "gte": minimum_rating 
+      } 
+   }
+
+   projection = { 
+      "_id": 0, 
+      "title": 1, 
+      "year": 1, 
+      "imdb.rating":1
+   }
+
+   results = movies.find(query, projection).sort("imdb.rating", -1).limit(10)
+   found = False
+   for movie in results: 
+      found = True
+      pprint.pprint(movie)
+
+   #if not found:
+    #  print("no movie tonight")   
+
 if __name__ == "__main__":
- show_sample_movie()
+    search_movies(["Action", "Adventure"], 7.0)
