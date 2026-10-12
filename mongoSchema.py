@@ -4,6 +4,8 @@ import pprint
 import certifi
 from pymongo import MongoClient, collection
 from pymongo.errors import ConnectionFailure
+from datetime import datetime, timezone
+
 
 load_dotenv(find_dotenv())
 
@@ -29,6 +31,7 @@ except ConnectionFailure as e:
 #production_db = client.production
 db = client["sample_mflix"]
 movies = db["movies"]
+watchlist = db["my_watchlist"]
 
 def show_sample_movie():
  movie = movies.find_one()
@@ -75,9 +78,44 @@ def display_movies(results):
          print(f"{position}. {title} ({year}) [ IMDb: {rating}]")
          print(f" ID: {movie['_id']} ")
 
+
+def add_to_watchlist(movie):
+   result = watchlist.update_one(
+      {
+         "user_id": "panagiotis", 
+         "movie_id": movie["_id"],
+         "title": movie["title"]
+      }, 
+      {
+         "$setOnInsert": {
+            "status": "unwatched", 
+            "added_at": datetime.now(timezone.utc)
+         }
+      }, 
+      upsert=True 
+   )
+
+   if result.upserted_id:
+      print(f"movie '{movie['title']}' added to watchlist")
+   else:
+      print("movie already in watchlist")
+   
+
 if __name__ == "__main__":
    results = search_movies(
       genres = ["Action", "Adventure"], minimum_rating = 7.0, limit = 10
    )
 
    display_movies(results)
+
+   if results:
+      try:
+         choice = int(input("Enter the number of the movie you want to add to your watchlist: "))
+
+         if 1 <= choice <= len(results):
+            selected_movie = results[choice - 1]
+            add_to_watchlist(selected_movie)
+         else:
+            print("out of list")
+      except ValueError:
+         print("Insert integer only")
